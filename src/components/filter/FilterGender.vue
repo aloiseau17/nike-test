@@ -1,6 +1,7 @@
 <script>
 import { GENDER } from '@/constants'
 import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
+import BaseCollapsable from '@/components/base/BaseCollapsable.vue'
 
 export default {
   emits: ['update:modelValue'],
@@ -12,6 +13,7 @@ export default {
   },
   components: {
     BaseCheckbox,
+    BaseCollapsable,
   },
   data() {
     return {
@@ -19,8 +21,8 @@ export default {
     }
   },
   computed: {
-    label() {
-      return this.selected.length ? `Sexe (${this.selected.length})` : 'Sexe'
+    count() {
+      return this.selected.length
     },
     selected: {
       get() {
@@ -35,20 +37,12 @@ export default {
 </script>
 
 <template>
-  <div class="filter__label" v-text="label" />
-  <div class="checkbox" v-for="gender in items">
-    <BaseCheckbox v-model="selected" :id="gender" :label="gender" />
-  </div>
+  <BaseCollapsable label="Sexe" :count="count">
+    <BaseCheckbox
+      v-for="gender in items"
+      v-model="selected"
+      :id="gender"
+      :label="gender"
+    />
+  </BaseCollapsable>
 </template>
-
-<style lang="scss" scoped>
-.filter {
-  &__label {
-    font-weight: bold;
-    padding: 12px 0;
-  }
-}
-.checkbox {
-  display: flex;
-}
-</style>
