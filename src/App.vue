@@ -4,6 +4,7 @@ import ProductList from '@/components/product/ProductList.vue'
 import FilterGender from '@/components/filter/FilterGender.vue'
 import FilterPrice from '@/components/filter/FilterPrice.vue'
 import FilterColor from '@/components/filter/FilterColor.vue'
+import FilterSport from '@/components/filter/FilterSport.vue'
 
 import productList from '/data/products.json'
 
@@ -13,6 +14,7 @@ export default {
     FilterGender,
     FilterPrice,
     FilterColor,
+    FilterSport,
   },
   data() {
     return {
@@ -24,8 +26,8 @@ export default {
           max: null,
         },
         color: [],
+        sport: [],
       },
-      selected: [],
     }
   },
   computed: {
@@ -37,7 +39,8 @@ export default {
         const matchGender = this.matchGender(product)
         const matchPrice = this.matchPrice(product)
         const matchColor = this.matchColor(product)
-        return matchGender && matchPrice && matchColor
+        const matchSport = this.matchSport(product)
+        return matchGender && matchPrice && matchColor && matchSport
       })
     },
   },
@@ -73,6 +76,24 @@ export default {
     parseProductPrice(price) {
       return Number(price.replace(/[^0-9|,]+/g, '').replace(/[,]+/g, '.'))
     },
+    getColor(product) {
+      const productColors = product.couleur.split(',')
+
+      return productColors.reduce((acc, productColor) => {
+        const matchingColorName = Object.keys(COLOR).find(
+          (colorName) =>
+            COLOR[colorName].name === productColor.toLowerCase().trim()
+        )
+
+        if (matchingColorName) {
+          acc.push(matchingColorName)
+        }
+
+        return acc
+      }, [])
+    },
+
+    /// MATCHING METHODS ///
     matchGender(product) {
       return (
         !this.filters.gender.length ||
@@ -93,21 +114,11 @@ export default {
         product.colors.find((color) => this.filters.color.includes(color))
       )
     },
-    getColor(product) {
-      const productColors = product.couleur.split(',')
-
-      return productColors.reduce((acc, productColor) => {
-        const matchingColorName = Object.keys(COLOR).find(
-          (colorName) =>
-            COLOR[colorName].name === productColor.toLowerCase().trim()
-        )
-
-        if (matchingColorName) {
-          acc.push(matchingColorName)
-        }
-
-        return acc
-      }, [])
+    matchSport(product) {
+      return (
+        !this.filters.sport.length ||
+        this.filters.sport.includes(product.sport.toLowerCase())
+      )
     },
   },
 }
@@ -121,6 +132,7 @@ export default {
       v-model:max="filters.price.max"
     />
     <FilterColor v-model="filters.color" />
+    <FilterSport v-model="filters.sport" />
   </aside>
   <main>
     <ProductList v-if="count" :products="productFiltered" />

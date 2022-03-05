@@ -1,5 +1,5 @@
 export default Object.freeze({
-  FOOTBALL: 'Football',
+  FOOTBALL: 'football',
   BASKET: 'basket',
   RUNNING: 'running',
 })
