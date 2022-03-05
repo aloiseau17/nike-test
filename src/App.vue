@@ -1,7 +1,9 @@
 <script>
+import { COLOR } from '@/constants'
 import ProductList from '@/components/product/ProductList.vue'
 import FilterGender from '@/components/filter/FilterGender.vue'
 import FilterPrice from '@/components/filter/FilterPrice.vue'
+import FilterColor from '@/components/filter/FilterColor.vue'
 
 import productList from '/data/products.json'
 
@@ -10,6 +12,7 @@ export default {
     ProductList,
     FilterGender,
     FilterPrice,
+    FilterColor,
   },
   data() {
     return {
@@ -20,6 +23,7 @@ export default {
           min: 0,
           max: null,
         },
+        color: [],
       },
       selected: [],
     }
@@ -32,7 +36,8 @@ export default {
       return this.products.filter((product) => {
         const matchGender = this.matchGender(product)
         const matchPrice = this.matchPrice(product)
-        return matchGender && matchPrice
+        const matchColor = this.matchColor(product)
+        return matchGender && matchPrice && matchColor
       })
     },
   },
@@ -44,14 +49,18 @@ export default {
      * Setup product list by removing empty product
      * and parsing prix key as Number
      * and setting gender as lowercase
+     * and setting color hex
      */
     setProductList() {
       this.products = productList.reduce((acc, product) => {
         if (product.article) {
           product.value = this.parseProductPrice(product.prix)
           product.sexe = product.sexe.toLowerCase()
+          product.colors = this.getColor(product)
+
           acc.push(product)
         }
+
         return acc
       }, [])
     },
@@ -78,6 +87,28 @@ export default {
 
       return matchMax && matchMin
     },
+    matchColor(product) {
+      return (
+        !this.filters.color.length ||
+        product.colors.find((color) => this.filters.color.includes(color))
+      )
+    },
+    getColor(product) {
+      const productColors = product.couleur.split(',')
+
+      return productColors.reduce((acc, productColor) => {
+        const matchingColorName = Object.keys(COLOR).find(
+          (colorName) =>
+            COLOR[colorName].name === productColor.toLowerCase().trim()
+        )
+
+        if (matchingColorName) {
+          acc.push(matchingColorName)
+        }
+
+        return acc
+      }, [])
+    },
   },
 }
 </script>
@@ -89,6 +120,7 @@ export default {
       v-model:min="filters.price.min"
       v-model:max="filters.price.max"
     />
+    <FilterColor v-model="filters.color" />
   </aside>
   <main>
     <ProductList v-if="count" :products="productFiltered" />
@@ -118,6 +150,7 @@ body {
 
 aside {
   @include tablet {
+    width: 200px;
     padding: 0 0 40px 16px;
   }
 }
