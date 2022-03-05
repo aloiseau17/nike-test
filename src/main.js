@@ -1,4 +1,18 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+const app = createApp(App)
+
+app.config.globalProperties.$filters = {
+  capitalize(value) {
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  },
+}
+
+app.component('font-awesome-icon', FontAwesomeIcon)
+
+app.mount('#app')
