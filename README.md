@@ -1,7 +1,27 @@
-# Vue 3 + Vite
+### Organisation
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+```
+├── src
+│ ├── components
+│ │ │ base : _UI components_
+│ │ │ filter : _4 filtres_
+│ │ │ product : _liste et item_
+│ ├── constants : _permet de normaliser les données_
+│ │ ├ color.js
+│ │ ├ gender.js
+│ │ ├ range.js
+│ │ ├ sport.js
+│ │ ├ index.js
+│ ├── services
+│ │ ├ products.js : _simule l'appel au seveur pour récupérer les produit et formate les produits_
+│ ├── App.vue
+│ ├── main.js
+└── ...
+```
 
-## Recommended IDE Setup
+### Améliorations possibles:
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+- ajouter des test unitaires avec Vue Test Utils
+- utiliser une librairie comme currency.js pour gérer l'affichage des prix selon la langue
+- utiliser Vue I18n pour gérer les label
+- variabiliser les couleurs, espaces SASS
