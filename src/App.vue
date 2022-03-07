@@ -1,5 +1,6 @@
 <script>
-import { COLOR } from '@/constants'
+import { COLOR, RANGE } from '@/constants'
+
 import ProductList from '@/components/product/ProductList.vue'
 import FilterGender from '@/components/filter/FilterGender.vue'
 import FilterPrice from '@/components/filter/FilterPrice.vue'
@@ -53,7 +54,7 @@ export default {
       }
 
       if (this.filters.price.range.length === 1) {
-        const priceRange = this.filters.price.range[0]
+        const priceRange = RANGE[this.filters.price.range[0]].label
         details.push(priceRange)
       }
 
