@@ -22,6 +22,7 @@ export default {
       filters: {
         gender: [],
         price: {
+          range: [],
           min: 0,
           max: null,
         },
@@ -42,6 +43,28 @@ export default {
         const matchSport = this.matchSport(product)
         return matchGender && matchPrice && matchColor && matchSport
       })
+    },
+    title() {
+      const details = ['Nouveauté']
+
+      if (this.filters.gender.length === 1) {
+        const gender = this.filters.gender[0]
+        details.push(this.$filters.capitalize(gender))
+      }
+
+      if (this.filters.price.range.length === 1) {
+        const priceRange = this.filters.price.range[0]
+        details.push(priceRange)
+      }
+
+      if (this.filters.color.length === 1) {
+        const color = COLOR[this.filters.color[0]].name
+        details.push(this.$filters.capitalize(color))
+      }
+
+      details.push(`(${this.count})`)
+
+      return details.join(' ')
     },
   },
   created() {
@@ -125,19 +148,25 @@ export default {
 </script>
 
 <template>
-  <aside>
-    <FilterGender v-model="filters.gender" />
-    <FilterPrice
-      v-model:min="filters.price.min"
-      v-model:max="filters.price.max"
-    />
-    <FilterColor v-model="filters.color" />
-    <FilterSport v-model="filters.sport" />
-  </aside>
-  <main>
-    <ProductList v-if="count" :products="productFiltered" />
-    <div v-else class="no-product">Aucun produits disponible</div>
-  </main>
+  <header>
+    <h1>{{ title }}</h1>
+  </header>
+  <div class="products">
+    <aside>
+      <FilterGender v-model="filters.gender" />
+      <FilterPrice
+        v-model:range="filters.price.range"
+        v-model:min="filters.price.min"
+        v-model:max="filters.price.max"
+      />
+      <FilterColor v-model="filters.color" />
+      <FilterSport v-model="filters.sport" />
+    </aside>
+    <main>
+      <ProductList v-if="count" :products="productFiltered" />
+      <div v-else class="no-product">Aucun produits disponible</div>
+    </main>
+  </div>
 </template>
 
 <style lang="scss">
@@ -153,17 +182,29 @@ body {
 }
 
 #app {
-  display: flex;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
   color: #2c3e50;
 }
 
+.products {
+  display: flex;
+}
+
+header {
+  font-weight: 500;
+  font-size: 24px;
+
+  @include tablet {
+    padding: 15px 48px;
+  }
+}
+
 aside {
   @include tablet {
     width: 200px;
-    padding: 0 0 40px 16px;
+    padding: 0px 0px 1em 48px;
   }
 }
 

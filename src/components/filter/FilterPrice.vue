@@ -3,8 +3,12 @@ import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
 import BaseCollapsable from '@/components/base/BaseCollapsable.vue'
 
 export default {
-  emits: ['update:min', 'update:max'],
+  emits: ['update:range', 'update:min', 'update:max'],
   props: {
+    range: {
+      type: Array,
+      required: true,
+    },
     min: {
       type: Number,
       default: 0,
@@ -36,6 +40,9 @@ export default {
     count() {
       return this.selected.length
     },
+    selectedLabels() {
+      return this.selected.map((id) => this.getRangeById(id)?.label)
+    },
   },
   methods: {
     getRangeById(id) {
@@ -53,6 +60,7 @@ export default {
 
       this.$emit('update:min', this.getMin(minItem))
       this.$emit('update:max', this.getMax(maxItem))
+      this.$emit('update:range', this.selectedLabels)
     },
   },
 }
