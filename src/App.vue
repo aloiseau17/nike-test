@@ -8,7 +8,7 @@ import FilterPrice from '@/components/filter/FilterPrice.vue'
 import FilterColor from '@/components/filter/FilterColor.vue'
 import FilterSport from '@/components/filter/FilterSport.vue'
 
-import productList from '/data/products.json'
+import { fetchProduct } from '@/services/products'
 
 export default {
   components: {
@@ -101,51 +101,13 @@ export default {
     this.setProductList()
   },
   methods: {
-    /**
-     * Setup product list by removing empty product
-     * and parsing prix key as Number
-     * and setting gender as lowercase
-     * and setting color hex
-     */
-    setProductList() {
-      this.products = productList.reduce((acc, product) => {
-        if (product.article) {
-          product.value = this.parseProductPrice(product.prix)
-          product.sexe = product.sexe.toLowerCase()
-          product.colors = this.getColor(product)
-
-          acc.push(product)
-        }
-
-        return acc
-      }, [])
+    async setProductList() {
+      try {
+        this.products = await fetchProduct()
+      } catch (error) {
+        console.log(error)
+      }
     },
-    /**
-     * Custom currency method to convert euro string to Number
-     * @param {String} price
-     *
-     * @returns {Number}
-     */
-    parseProductPrice(price) {
-      return Number(price.replace(/[^0-9|,]+/g, '').replace(/[,]+/g, '.'))
-    },
-    getColor(product) {
-      const productColors = product.couleur.split(',')
-
-      return productColors.reduce((acc, productColor) => {
-        const matchingColorName = Object.keys(COLOR).find(
-          (colorName) =>
-            COLOR[colorName].name === productColor.toLowerCase().trim()
-        )
-
-        if (matchingColorName) {
-          acc.push(matchingColorName)
-        }
-
-        return acc
-      }, [])
-    },
-
     toggleAsideHandler() {
       this.open = !this.open
     },
