@@ -203,8 +203,12 @@ header {
 
 aside {
   @include tablet {
-    width: 200px;
+    width: 250px;
     padding: 0px 0px 1em 48px;
+  }
+
+  .collapse {
+    border-top: 1px solid #e5e5e5;
   }
 }
 

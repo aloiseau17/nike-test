@@ -77,6 +77,7 @@ export default {
   }
 
   &__price {
+    font-weight: bold;
     padding-top: 12px;
   }
 }

@@ -65,6 +65,10 @@ export default {
     cursor: pointer;
   }
 
+  &__icon {
+    margin-left: 8px;
+  }
+
   &__content {
     overflow: hidden;
   }

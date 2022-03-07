@@ -67,7 +67,7 @@ export default {
 </script>
 
 <template>
-  <BaseCollapsable label="Prix" :count="count">
+  <BaseCollapsable label="Rechercher par prix" :count="count">
     <BaseCheckbox
       v-for="range in items"
       v-model="selected"
