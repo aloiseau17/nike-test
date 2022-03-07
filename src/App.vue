@@ -1,5 +1,6 @@
 <script>
 import { COLOR, RANGE } from '@/constants'
+import { faSliders, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import ProductList from '@/components/product/ProductList.vue'
 import FilterGender from '@/components/filter/FilterGender.vue'
@@ -19,6 +20,7 @@ export default {
   },
   data() {
     return {
+      open: false,
       products: [],
       filters: {
         gender: [],
@@ -33,6 +35,12 @@ export default {
     }
   },
   computed: {
+    fitlerIcon() {
+      return faSliders
+    },
+    closeIcon() {
+      return faCircleXmark
+    },
     count() {
       return this.productFiltered.length
     },
@@ -44,6 +52,27 @@ export default {
         const matchSport = this.matchSport(product)
         return matchGender && matchPrice && matchColor && matchSport
       })
+    },
+    asideClass() {
+      return {
+        open: this.open,
+      }
+    },
+    filterLength() {
+      return (
+        this.filters.price.range.length +
+        this.filters.sport.length +
+        this.filters.color.length +
+        this.filters.gender.length
+      )
+    },
+    resetLabel() {
+      let label = 'Effacer'
+
+      if (this.filterLength) {
+        label += ` (${this.filterLength})`
+      }
+      return label
     },
     title() {
       const details = ['Nouveauté']
@@ -117,6 +146,24 @@ export default {
       }, [])
     },
 
+    toggleAsideHandler() {
+      this.open = !this.open
+    },
+    resetFilter() {
+      this.filters = {
+        gender: [],
+        price: {
+          range: [],
+          min: 0,
+          max: null,
+        },
+        color: [],
+        sport: [],
+      }
+
+      this.open = false
+    },
+
     /// MATCHING METHODS ///
     matchGender(product) {
       return (
@@ -151,9 +198,20 @@ export default {
 <template>
   <header>
     <h1>{{ title }}</h1>
+    <font-awesome-icon
+      class="filter-btn"
+      :icon="fitlerIcon"
+      @click="toggleAsideHandler"
+    />
   </header>
   <div class="products">
-    <aside>
+    <aside :class="asideClass">
+      <font-awesome-icon
+        class="filter-btn"
+        :icon="closeIcon"
+        size="3x"
+        @click="toggleAsideHandler"
+      />
       <FilterGender v-model="filters.gender" />
       <FilterPrice
         v-model:range="filters.price.range"
@@ -162,6 +220,11 @@ export default {
       />
       <FilterColor v-model="filters.color" />
       <FilterSport v-model="filters.sport" />
+
+      <footer>
+        <BaseButton @click="resetFilter">{{ resetLabel }}</BaseButton>
+        <BaseButton primary @click="toggleAsideHandler">Appliquer</BaseButton>
+      </footer>
     </aside>
     <main>
       <ProductList v-if="count" :products="productFiltered" />
@@ -194,28 +257,95 @@ body {
 }
 
 header {
+  display: flex;
+  padding: 15px 20px;
   font-weight: 500;
   font-size: 24px;
+
+  h1 {
+    flex: 1;
+  }
 
   @include tablet {
     padding: 15px 48px;
   }
+
+  .filter-btn {
+    cursor: pointer;
+
+    @include tablet {
+      display: none;
+    }
+  }
 }
 
 aside {
+  display: flex;
+  flex-direction: column;
+
+  @include mobile {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    background-color: #fff;
+    padding: 0px 20px;
+    overflow: auto;
+  }
+
   @include tablet {
     width: 250px;
     padding: 0px 0px 1em 48px;
   }
 
+  &.open {
+    @include mobile {
+      left: 0;
+    }
+  }
+
+  .filter-btn {
+    align-self: flex-end;
+    margin: 10px 0;
+
+    @include tablet {
+      display: none;
+    }
+  }
+
   .collapse {
     border-top: 1px solid #e5e5e5;
+
+    @include mobile {
+      &:nth-child(2) {
+        border: none;
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    padding: 20px 0;
+
+    @include tablet {
+      display: none;
+    }
+
+    & > * {
+      flex: 1;
+    }
   }
 }
 
 main {
   flex: 1;
-  padding: 0 40px;
+  padding: 0 6px;
+
+  @include tablet {
+    padding: 0 40px;
+  }
 
   .no-product {
     display: flex;
