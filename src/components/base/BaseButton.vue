@@ -1,5 +1,7 @@
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   props: {
     primary: {
       type: Boolean,
@@ -12,7 +14,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <template>

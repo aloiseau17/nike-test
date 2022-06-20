@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 
-export default {
+export default defineComponent({
   props: {
     count: {
       type: Number,
@@ -35,7 +36,7 @@ export default {
       this.open = !this.open
     },
   },
-}
+})
 </script>
 
 <template>

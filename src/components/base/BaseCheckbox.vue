@@ -1,11 +1,13 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
-export default {
+export default defineComponent({
   emits: ['update:modelValue'],
   props: {
     modelValue: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
     },
     label: {
@@ -25,12 +27,12 @@ export default {
       get() {
         return this.modelValue
       },
-      set(value) {
+      set(value: string[]) {
         this.$emit('update:modelValue', value)
       },
     },
   },
-}
+})
 </script>
 
 <template>
