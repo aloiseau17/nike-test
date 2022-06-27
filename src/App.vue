@@ -1,4 +1,7 @@
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
+import type { Product } from '@/types/product.model'
+import type { SPORT, GENDER } from '@/constants'
 import { COLOR, RANGE } from '@/constants'
 import { faSliders, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
@@ -10,7 +13,7 @@ import FilterSport from '@/components/filter/FilterSport.vue'
 
 import { fetchProduct } from '@/services/products'
 
-export default {
+export default defineComponent({
   components: {
     ProductList,
     FilterGender,
@@ -21,16 +24,16 @@ export default {
   data() {
     return {
       open: false,
-      products: [],
+      products: [] as Product[],
       filters: {
-        gender: [],
+        gender: [] as (keyof typeof GENDER)[],
         price: {
-          range: [],
+          range: [] as (keyof typeof RANGE)[],
           min: 0,
-          max: null,
+          max: undefined,
         },
-        color: [],
-        sport: [],
+        color: [] as (keyof typeof COLOR)[],
+        sport: [] as Lowercase<keyof typeof SPORT>[],
       },
     }
   },
@@ -41,10 +44,10 @@ export default {
     closeIcon() {
       return faCircleXmark
     },
-    count() {
+    count(): number {
       return this.productFiltered.length
     },
-    productFiltered() {
+    productFiltered() : Product[] {
       return this.products.filter((product) => {
         const matchGender = this.matchGender(product)
         const matchPrice = this.matchPrice(product)
@@ -117,7 +120,7 @@ export default {
         price: {
           range: [],
           min: 0,
-          max: null,
+          max: undefined,
         },
         color: [],
         sport: [],
@@ -127,13 +130,13 @@ export default {
     },
 
     /// MATCHING METHODS ///
-    matchGender(product) {
+    matchGender(product: Product) {
       return (
         !this.filters.gender.length ||
         this.filters.gender.includes(product.sexe)
       )
     },
-    matchPrice(product) {
+    matchPrice(product: Product) {
       const matchMin = product.value > this.filters.price.min
       const matchMax = this.filters.price.max
         ? product.value <= this.filters.price.max
@@ -141,20 +144,22 @@ export default {
 
       return matchMax && matchMin
     },
-    matchColor(product) {
+    matchColor(product: Product) {
       return (
         !this.filters.color.length ||
         product.colors.find((color) => this.filters.color.includes(color))
       )
     },
-    matchSport(product) {
+    matchSport(product: Product) {
       return (
         !this.filters.sport.length ||
-        this.filters.sport.includes(product.sport.toLowerCase())
+        this.filters.sport.includes(
+          product.sport.toLowerCase() as Lowercase<keyof typeof SPORT>
+        )
       )
     },
   },
-}
+})
 </script>
 
 <template>

@@ -9,7 +9,7 @@ export default defineComponent({
   emits: ['update:modelValue'],
   props: {
     modelValue: {
-      type: Array as PropType<(keyof typeof SPORT)[]>,
+      type: Array as PropType<Lowercase<keyof typeof SPORT>[]>,
       required: true,
     },
   },
