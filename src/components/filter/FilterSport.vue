@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 import { SPORT } from '@/constants'
 import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
 import BaseCollapsable from '@/components/base/BaseCollapsable.vue'
 
-export default {
+export default defineComponent({
   emits: ['update:modelValue'],
   props: {
     modelValue: {
-      type: Array,
+      type: Array as PropType<(keyof typeof SPORT)[]>,
       required: true,
     },
   },
@@ -28,12 +30,12 @@ export default {
       get() {
         return this.modelValue
       },
-      set(value) {
+      set(value: keyof typeof SPORT) {
         this.$emit('update:modelValue', value)
       },
     },
   },
-}
+})
 </script>
 
 <template>

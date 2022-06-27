@@ -1,17 +1,20 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
+import type { Product } from '@/types/product.model'
 import ProductItem from '@/components/product/ProductItem.vue'
 
-export default {
+export default defineComponent({
   props: {
     products: {
-      type: Array,
+      type: Array as PropType<Product[]>,
       required: true,
     },
   },
   components: {
     ProductItem,
   },
-}
+})
 </script>
 
 <template>

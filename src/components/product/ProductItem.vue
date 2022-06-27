@@ -1,19 +1,22 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
+import type { Product } from '@/types/product.model'
 import { GENDER } from '@/constants'
 
-export default {
+export default defineComponent({
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true,
     },
   },
   computed: {
     imagePath() {
-      return this.product.photo ? `/images/${this.product.photo}` : null
+      return this.product.photo ? `/images/${this.product.photo}` : undefined
     },
     colorLength() {
-      return this.product.couleur.split(',').length
+      return this.product.colors.length
     },
     color() {
       return this.colorLength > 1
@@ -33,7 +36,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <template>

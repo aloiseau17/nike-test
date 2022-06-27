@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
 import { RANGE } from '@/constants'
 import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
 import BaseCollapsable from '@/components/base/BaseCollapsable.vue'
 
-export default {
+export default defineComponent({
   emits: ['update:range', 'update:min', 'update:max'],
   props: {
     range: {
-      type: Array,
+      type: Array as PropType<(keyof typeof RANGE)[]>,
       required: true,
     },
     min: {
@@ -31,12 +33,14 @@ export default {
   computed: {
     selected: {
       get() {
-        return this.range
+        return this.range.map((value) => String(value))
       },
-      set(values) {
-        const selected = values.map((value) => Number(value))
-        const minItem = Math.min(...selected)
-        const maxItem = Math.max(...selected)
+      set(values: string[]) {
+        const selected = values.map(
+          (value) => Number(value) as keyof typeof RANGE
+        )
+        const minItem = Math.min(...selected) as keyof typeof RANGE
+        const maxItem = Math.max(...selected) as keyof typeof RANGE
 
         this.$emit('update:min', this.getMin(minItem))
         this.$emit('update:max', this.getMax(maxItem))
@@ -48,17 +52,17 @@ export default {
     },
   },
   methods: {
-    getRangeById(id) {
+    getRangeById(id: keyof typeof RANGE) {
       return this.items[id]
     },
-    getMax(id) {
+    getMax(id: keyof typeof RANGE): number | null {
       return this.getRangeById(id)?.max || null
     },
-    getMin(id) {
+    getMin(id: keyof typeof RANGE): number {
       return this.getRangeById(id)?.min || 0
     },
   },
-}
+})
 </script>
 
 <template>

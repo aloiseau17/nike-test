@@ -1,4 +1,6 @@
-import productList from '/data/products.json'
+import type { SPORT, GENDER } from '@/constants'
+import productList from '@data/products.json'
+import type { Product } from '@/types/product.model'
 import { COLOR } from '@/constants'
 
 /**
@@ -7,7 +9,7 @@ import { COLOR } from '@/constants'
  *
  * @returns {Number}
  */
-const parseProductPrice = (price) => {
+const parseProductPrice = (price: string) => {
   return Number(price.replace(/[^0-9|,]+/g, '').replace(/[,]+/g, '.'))
 }
 
@@ -17,20 +19,26 @@ const parseProductPrice = (price) => {
  *
  * @returns {Object[]}
  */
-const getColor = (colors) => {
+const getColor = (colors: string) => {
   const productColors = colors.split(',')
 
-  return productColors.reduce((acc, productColor) => {
-    const matchingColorName = Object.keys(COLOR).find(
-      (colorName) => COLOR[colorName].name === productColor.toLowerCase().trim()
-    )
+  return productColors.reduce(
+    (acc: (keyof typeof COLOR)[], productColor: string) => {
+      const matchingColorName = (
+        Object.keys(COLOR) as (keyof typeof COLOR)[]
+      ).find(
+        (colorName) =>
+          COLOR[colorName].name === productColor.toLowerCase().trim()
+      ) as keyof typeof COLOR | null
 
-    if (matchingColorName) {
-      acc.push(matchingColorName)
-    }
+      if (matchingColorName) {
+        acc.push(matchingColorName)
+      }
 
-    return acc
-  }, [])
+      return acc
+    },
+    []
+  )
 }
 
 /**
@@ -40,13 +48,18 @@ const getColor = (colors) => {
  * and setting color hex
  */
 const getProductList = () => {
-  return productList.reduce((acc, product) => {
+  return productList.reduce((acc: Product[], product) => {
     if (product.article) {
-      product.value = parseProductPrice(product.prix)
-      product.sexe = product.sexe.toLowerCase()
-      product.colors = getColor(product.couleur)
+      const newProduct: Product = {
+        article: product.article,
+        value: parseProductPrice(product.prix),
+        sexe: product.sexe.toLowerCase() as keyof typeof GENDER,
+        sport: product.sport as keyof typeof SPORT,
+        photo: product.photo,
+        colors: getColor(product.couleur),
+      }
 
-      acc.push(product)
+      acc.push(newProduct)
     }
 
     return acc
@@ -66,7 +79,7 @@ const getProductList = () => {
  * @returns {String} product[].sport - product sport
  * @returns {Number} product[].value - product price
  */
-const fetchProduct = () => {
+const fetchProduct = (): Promise<Product[]> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       return resolve(getProductList())
